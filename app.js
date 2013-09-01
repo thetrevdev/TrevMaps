@@ -26,34 +26,31 @@ app.controller('MainCtrl', function ($scope, angularFireCollection, $cookies, $q
 
     navigator.geolocation.watchPosition(positionUpdated);
 
-    $scope.items = angularFireCollection(new Firebase('https://trevdev-gmaps.firebaseio.com/list'), callBacks, cb);
+    $scope.items = angularFireCollection(new Firebase('https://trevdev-gmaps.firebaseio.com/list2'), callBacks, cb);
 
 
     function initMe() {
         //look for fbItem
-        var myMarkerId = $cookies.myMarkerId;
-        var myItem;
-        angular.forEach($scope.items, function(item){
-          if(item.$id == myMarkerId){
-            myItem = item;
-          }
-        });
-
-        if(myItem){
-          $scope.me = myItem;
-          $scope.name = myItem.name;
-        }
-        else{
+        
+        if(!$scope.hasMe){
           addMyMarker($scope.initialPosition);
         }
     }
 
-    function cb() {
+    function cb(items) {
+
+        var myMarkerId = $cookies.myMarkerId;
+        angular.forEach(items, function(item){
+          if(item.name() == myMarkerId){
+            $scope.hasMe = true;
+          }
+        });
+
         firebasePromise.resolve();
     }
 
     function positionUpdated(position) {
-      debugger;
+      
         if (!$scope.initialPosition) {
             $scope.initialPosition = position;
             locationPromise.resolve(position);
@@ -70,7 +67,7 @@ app.controller('MainCtrl', function ($scope, angularFireCollection, $cookies, $q
                 lng: position.coords.longitude
             }
         }, testAdd);
-        
+
         $cookies.myMarkerId = $scope.meRef.name();
     }
 
@@ -88,7 +85,12 @@ app.controller('MainCtrl', function ($scope, angularFireCollection, $cookies, $q
     function getCallbackFn() {
         var callBacks = {};
         callBacks.childAdded = function (item) {
-            console.log('childAdded');
+            
+            if(item.$id ==$cookies.myMarkerId){
+                $scope.me = item;
+                $scope.name = item.name;
+            }
+
             var marker = new google.maps.Marker({
                 map: $scope.myMap,
                 position: new google.maps.LatLng(item.latlng.lat, item.latlng.lng)
