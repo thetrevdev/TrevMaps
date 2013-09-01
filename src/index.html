@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8" />
+    <title>AngularJS Plunker</title>
+    
+    <script>document.write('<base href="' + document.location + '" />');</script>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css" />
+        
+    <script src="http://code.angularjs.org/1.2.0rc1/angular.js"></script>
+    <script src="http://code.angularjs.org/1.2.0rc1/angular-cookies.min.js"></script>
+    
+    
+    <script src="https://cdn.firebase.com/v0/firebase.js"></script>
+    <script src="angularFire.js"></script>
+    
+    <script src="http://rawgithub.com/angular-ui/ui-utils/gh-pages/build/ui-utils.min.js"></script>
+    <script src="http://rawgithub.com/angular-ui/ui-map/gh-pages/build/ui-map.min.js"></script>
+
+    <script src="app.js"></script>
+    
+  </head>
+
+  <body id="body">
+        
+    <!--Header-->
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">TrevDev</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">About</a></li>
+            <!--<li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">Dropdown <b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Another action</a></li>
+                <li><a href="#">Something else here</a></li>
+                <li class="divider"></li>
+                <li><a href="#">Separated link</a></li>
+                <li><a href="#">One more separated link</a></li>
+              </ul>
+            </li>-->
+          </ul>
+          <p class="navbar-text pull-right">Hi!</p>
+        </div><!--/.navbar-collapse -->
+        
+      </div>
+    </div>
+    <!--End Header-->
+
+   <div class="jumbotron">
+      <div class="container">
+        <h1>Cool Name!</h1>
+        <p>Show user locations in real time.  Uses AngularJS and Firebase.</p>
+      </div>
+    </div>
+    
+    <div class="container" ng-controller="MainCtrl">
+
+      <div class="well">
+        <h3>Settings</h3>
+        <div class="control-group">
+          <label for="name" class="control-label"> 
+            Name
+          </label>
+          <div class="controls">
+            <input name="name" type="text" id="name" ng-model="name">
+          </div>
+          <br/>
+          <div><button ng-click="save()">Save</button></div>
+      </div>
+    </div>
+    
+    <div class="well">
+    <h3>Users</h3>
+  <table class="table">
+  <tr ng-repeat="marker in myMarkers">
+    <td>{{marker.data.name}}</td>
+    <td><button ng-click="myMap.panTo(marker.getPosition())">Pan</button></td>
+  </tr>
+</table>
+</div>
+ 
+<!-- this is the confusing part. we have to point the map marker directive
+  at an existing google.maps.Marker object, so it can hook up events -->
+<div ng-repeat="marker in myMarkers" ui-map-marker="myMarkers[$index]"
+  ui-event="{'map-click': 'openMarkerInfo(marker)'}">
+</div>
+ 
+<div ui-map-info-window="myInfoWindow">
+  <h4>{{currentMarker.data.name}}</h4>
+  <br/>
+</div>
+ 
+<!-- Giving the div an id="map_canvas" fix problems with twitter bootstrap affecting
+google maps -->
+<div class="google-map-canvas">
+<div id="map_canvas" ui-map="myMap" class="map"
+  ui-options="mapOptions">
+</div>
+</div>
+
+</div>
+
+      <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&callback=initCall"></script>
+    <script>
+      function initCall() {
+  angular.bootstrap(document.getElementById("body"), ['plunker']);
+}
+    </script>
+    
+  </body>
+
+</html>
