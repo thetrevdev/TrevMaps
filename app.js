@@ -40,11 +40,10 @@ app.controller('MainCtrl', function ($scope, angularFireCollection, $cookies, $q
     function cb(items) {
 
         var myMarkerId = $cookies.myMarkerId;
-        angular.forEach(items, function(item){
-          if(item.name() == myMarkerId){
-            $scope.hasMe = true;
-          }
-        });
+        var snapshot = items.val();
+
+        if(snapshot[myMarkerId])
+            $scope.hasMe = true;          
 
         firebasePromise.resolve();
     }
