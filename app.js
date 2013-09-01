@@ -26,7 +26,7 @@ app.controller('MainCtrl', function ($scope, angularFireCollection, $cookies, $q
 
     navigator.geolocation.watchPosition(positionUpdated);
 
-    $scope.items = angularFireCollection(new Firebase('https://trevdev-gmaps.firebaseio.com/list2'), callBacks, cb);
+    $scope.items = angularFireCollection(new Firebase('https://trevdev-gmaps.firebaseio.com/list'), callBacks, cb);
 
 
     function initMe() {
